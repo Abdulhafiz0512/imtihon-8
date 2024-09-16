@@ -1,23 +1,17 @@
 import { useEffect } from "react";
-
+import { Link } from 'react-router-dom';
 import HeroSection from "../components/HeroSection";
 import {
   Table,
   TableBody,
   TableHead,
   TableHeadCell,
-  Drawer,
   Button,
 } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setCountries,
-  setLoading,
-  setError,
-  selectCountry,
-  unSelectCountry,
-} from "../store/countriesSlice";
-
+import { setCountries, setLoading, setError } from "../store/countriesSlice";
+import { addCountry, removeCountry } from "../store/selectedCountriesSlice";
+import { CountryPagination } from "../components/Pagination";
 const customTheme = {
   root: {
     base: "w-full text-left text-sm text-gray-500 dark:text-gray-400 border-blue-700",
@@ -46,9 +40,8 @@ const customTheme = {
 };
 
 export default function Countries() {
-  const { countries, loading, selectedCountries } = useSelector(
-    (store) => store.countries
-  );
+  const { countries, loading } = useSelector((state) => state.countries);
+  const { selectedCountries } = useSelector((state) => state.selectedCountries);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -73,7 +66,12 @@ export default function Countries() {
 
     fetchCountries();
   }, []);
-
+  useEffect(() => {
+    localStorage.setItem(
+      "selectedCountries",
+      JSON.stringify(selectedCountries)
+    );
+  }, [selectedCountries]);
   function handleSelectCountry(country, selected) {
     const selectedCountry = {
       cca2: country.cca2,
@@ -83,9 +81,9 @@ export default function Countries() {
     };
 
     if (selected) {
-      dispatch(unSelectCountry(country.cca2));
+      dispatch(removeCountry(country.cca2));
     } else {
-      dispatch(selectCountry(selectedCountry));
+      dispatch(addCountry(selectedCountry));
     }
   }
 
@@ -96,34 +94,32 @@ export default function Countries() {
 
   return (
     <div>
-      <Drawer open={false}>
-        <Drawer.Items>Drawer item</Drawer.Items>
-      </Drawer>
-
       <HeroSection />
 
       {loading ?? <div>LOADING...</div>}
 
-      <div className='max-w-[1140px] mx-auto mt-4'>
+      <div className="max-w-[1140px] mx-auto mt-4">
         <Table striped theme={customTheme}>
           <TableHead>
             <TableHeadCell>Name</TableHeadCell>
             <TableHeadCell>Population</TableHeadCell>
             <TableHeadCell>Capital</TableHeadCell>
             <TableHeadCell>
-              <span className='sr-only'>Select</span>
+              <span className="sr-only">Select</span>
             </TableHeadCell>
           </TableHead>
-          <TableBody className='divide-y'>
+          <TableBody className="divide-y">
             {countries.map((country) => {
               const selected = isCountrySelected(country.cca2);
               return (
                 <Table.Row
                   key={country.cca2}
-                  className='bg-white dark:border-gray-800 border-blue-700 dark:bg-gray-800'
+                  className="bg-white dark:border-gray-800 border-blue-700 dark:bg-gray-800"
                 >
-                  <Table.Cell className='whitespace-nowrap font-medium text-gray-900 dark:text-white'>
-                    {country.name.common}
+                  <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                    <Link to={`/countries/${country.cca2}`}>
+                      {country.name.common}
+                    </Link>
                   </Table.Cell>
                   <Table.Cell>{country.population}</Table.Cell>
                   <Table.Cell>{country.capital}</Table.Cell>
@@ -141,6 +137,7 @@ export default function Countries() {
           </TableBody>
         </Table>
       </div>
+      <CountryPagination></CountryPagination>
     </div>
   );
 }

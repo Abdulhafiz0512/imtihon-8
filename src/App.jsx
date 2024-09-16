@@ -4,6 +4,7 @@ import Countries from "./pages/Countries";
 import Header from "./components/Header";
 import { useState } from "react";
 import SingleCountry from "./pages/SingleCountry";
+import LineChartWithFilters from "./components/LineChart";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +18,8 @@ function App() {
             path='/'
             element={<Countries isOpen={isOpen} setIsOpen={setIsOpen} />}
           />
-          <Route path='/country/:id' element={<SingleCountry />} />
+          <Route path='/countries/:id' Component={SingleCountry}/>
+          <Route path="/countries/chart" Component={LineChartWithFilters}></Route>
         </Routes>
       </Router>
     </div>
