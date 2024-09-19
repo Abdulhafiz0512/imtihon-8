@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import countriesSlice from "./countriesSlice";
-import selectedCountriesSlice from "./selectedCountriesSlice";
+import cryptosSlice from "./cryptosSlice"; 
+import selectedCryptosSlice from "./selectedCryptosSlice"; 
 
 export default configureStore({
   reducer: {
-    countries: countriesSlice,
-    selectedCountries: selectedCountriesSlice,
+    cryptos: cryptosSlice, 
+    selectedCryptos: selectedCryptosSlice, 
   },
 });

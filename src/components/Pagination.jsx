@@ -1,37 +1,73 @@
-"use client";
+import { useDispatch, useSelector } from "react-redux";
+import { setPage } from "../store/cryptosSlice";
 
-import { Pagination } from "flowbite-react";
-import { useState } from "react";
 
-export function CountryPagination() {
-  const [currentPage, setCurrentPage] = useState(1);
+export function CryptoPagination() {
+  const { page } = useSelector((state) => state.cryptos);
+  const dispatch = useDispatch();
+  const totalPages = 10;
 
- 
-  const onPageChange = (page) => {
-    setCurrentPage(page);
-    console.log(`Current Page: ${page}`);
+  const handlePageChange = (pageNum) => {
+    dispatch(setPage(pageNum));
+  };
+
+  const createPaginationButtons = () => {
+    let buttons = [];
+
+  
+    buttons.push(
+      <button
+        key="prev"
+        onClick={() => handlePageChange(page - 1)}
+        disabled={page === 1}
+        className={`px-3 py-1 mx-1 text-blue-400 ${
+          page === 1 ? "opacity-50 cursor-not-allowed" : "hover:text-blue-600"
+        }`}
+      >
+        &lt;
+      </button>
+    );
+
+
+    for (let i = 1; i <= totalPages; i++) {
+      buttons.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`px-3 py-1 mx-1 rounded-full transition-all duration-300 focus:outline-none
+            ${
+              page === i
+                ? "bg-gray-700 text-blue-400 shadow-md"
+                : "text-blue-400 hover:text-blue-600"
+            }`}
+        >
+          {i}
+        </button>
+      );
+    }
+
+
+    buttons.push(
+      <button
+        key="next"
+        onClick={() => handlePageChange(page + 1)}
+        disabled={page === totalPages}
+        className={`px-3 py-1 mx-1 text-blue-400 ${
+          page === totalPages
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:text-blue-600"
+        }`}
+      >
+        &gt;
+      </button>
+    );
+
+    return buttons;
   };
 
   return (
-    <div className="flex overflow-x-auto sm:justify-center mb-4 mt-4">
-      <Pagination
-        currentPage={currentPage}
-        totalPages={10}
-        onPageChange={onPageChange}
-        renderButton={({ page, isActive, onClick }) => (
-          <button
-            key={page}
-            onClick={onClick}
-            className={`px-3 py-1 mx-1 rounded-md transition-colors duration-300 ${
-              isActive
-                ? "bg-[rgba(255,255,255,0.4)] text-black"
-                : "bg-transparent text-gray-500 hover:text-black"
-            }`}
-          >
-            {page}
-          </button>
-        )}
-      />
+    <div className="flex justify-center items-center pb-4 mt-4">
+      {createPaginationButtons()}
     </div>
   );
 }

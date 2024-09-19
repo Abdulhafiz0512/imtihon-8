@@ -1,18 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  countries: [],
-  selectedCountries: [],
+  cryptos: [], 
+   
   loading: false,
   error: null,
+  page : 1,
 };
 
-const countriesSlice = createSlice({
-  name: "countries",
+const cryptosSlice = createSlice({
+  name: "cryptos", 
   initialState,
   reducers: {
-    setCountries: (state, action) => {
-      state.countries = action.payload;
+    setCryptos: (state, action) => { 
+      state.cryptos = action.payload;
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -20,15 +21,17 @@ const countriesSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
-    
+    setPage: (state, action) =>{
+      state.page =action.payload
+    }
   },
 });
 
-export default countriesSlice.reducer;
+export default cryptosSlice.reducer;
 export const {
-  setCountries,
+  setCryptos, 
   setLoading,
   setError,
-  selectCountry,
-  unSelectCountry,
-} = countriesSlice.actions;
+  
+  setPage
+} = cryptosSlice.actions;
